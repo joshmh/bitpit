@@ -1,0 +1,3 @@
+scripts/*.dat
+scripts/vault
+scripts/split-keys

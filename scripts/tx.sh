@@ -1,21 +1,26 @@
 # Assume two keys (key1.dat, key2.dat), or ask for password
 
-key1=key1.dat
-key2=key2.dat
-encrypted_seed=vault.dat.seed.asc
+keys_dir=split-keys
+key1=$keys_dir/key1.dat
+key2=$keys_dir/key2.dat
+vault_dir=vault
+encrypted_seed=$vault_dir/vault.dat.seed.asc
+wallet=$vault_dir/vault.dat
 
 echo
 echo "*** bitpit version 0.1 ***"
 echo
 echo "This program will create an offline Bitcoin transaction for transferring Bitcoins from your cold storage."
-echo "The program expects the following files in your current directory:"
+echo "The program expects the following files in the \"vault\" directory:"
 echo
 echo "vault.dat (The wallet file that was created on this computer)"
 echo "vault.dat.seed.asc (The encrypted seed file that was created on this computer)"
-echo "key1.dat and key2.dat [optional] (If you have forgotten your password, you'll need 2 of the 3 original key files)"
+echo
+echo "...and, optionally, two of the three key files, named key1.dat and key2.dat. These should be in the \"split-keys\" directory, "
+echo "not in the \"vault\" directory. You only need these if you've forgotten your pass phrase."
 echo
 
-if [ ! -f vault.dat ]; then
+if [ ! -f $wallet ]; then
 	echo "----------------------------------------------------------------"
 	echo
 	echo "vault.dat wallet file is missing. Please copy that file and try again."
@@ -34,10 +39,16 @@ fi
 read -p "What bitcoin address would you like to send to? " btc_address
 read -p "How many bitcoins would you like to send? " amount
 
+echo
+
 if [ -f $key1 -a -f $key2 ]; then
-	echo "files exist"
+	echo "Using split keys method."
+	pass=`./combine-expect.sh`
+	export GPG_PASS=$pass
 elif [ -f $key1 -o -f $key2 ]; then
 	echo "You need at least two key files, called key1.dat and key2.dat"
+	echo
+	exit
 else
 	echo "Using pass phrase method."
 	read -s -p "Please enter your pass phrase: " pass
@@ -52,12 +63,12 @@ echo "Done."
 echo
 
 echo "Reseeding wallet..."
-electrum -w vault.dat reseed
+electrum -w $wallet reseed > /dev/null
 echo "Done."
 echo
 
 echo "Creating transaction..."
-electrum -w vault.dat mktx $btc_address $amount > tx.dat
+electrum -w $wallet mktx $btc_address $amount > tx.dat
 echo "Done."
 echo
 
