@@ -1,0 +1,1 @@
+gconftool-2 --type bool --set /apps/nautilus/preferences/media_automount false
