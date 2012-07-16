@@ -1,5 +1,8 @@
 #!/usr/bin/expect -f
 log_user 0
+
+set timeout 120
+
 set tmp /tmp/scratch
 set pass $env(GPG_PASS)
 
