@@ -1,7 +1,7 @@
-TMP=scratch
-OUT=vault
-PASS="the secret pass phrase"
-SPLITS=split-keys
+TMP=/tmp/scratch
+OUT=$HOME/vault
+SPLITS=$HOME/split-keys
+SCRIPTS_DIR=/usr/local/bin
 
 echo
 echo "*** bitpit 0.1 ***"
@@ -19,9 +19,9 @@ rm -rf $TMP
 rm -rf $OUT
 rm -rf $SPLITS
 
-mkdir $TMP
-mkdir $OUT
-mkdir $SPLITS
+mkdir -p $TMP
+mkdir -p $OUT
+mkdir -p $SPLITS
 
 read -s -p "Enter Your Password: " pass
 export GPG_PASS=$pass
@@ -29,11 +29,11 @@ export GPG_PASS=$pass
 echo
 echo
 
-./expect.sh
+$SCRIPTS_DIR/expect.sh
 
 echo
 echo "Creating split keys for seed..."
-./s-expect.sh
+$SCRIPTS_DIR/s-expect.sh
 sed -n -e 2p $TMP/splitted.dat > $SPLITS/key1.dat
 sed -n -e 3p $TMP/splitted.dat > $SPLITS/key2.dat
 sed -n -e 4p $TMP/splitted.dat > $SPLITS/key3.dat

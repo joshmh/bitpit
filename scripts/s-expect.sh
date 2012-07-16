@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f
 log_user 0
-set tmp scratch
+set tmp /tmp/scratch
 set pass $env(GPG_PASS)
 
 spawn ssss-split -t 2 -n 3

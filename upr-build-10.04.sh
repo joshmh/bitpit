@@ -129,6 +129,7 @@ if [ $STEP -lt 2 ]; then
     STEP=2
 fi
 
+
 # Mount .iso
 # Das .iso mounten:
 if [ $STEP -lt 3 ]; then
@@ -212,36 +213,6 @@ cd ..
     STEP=7
 fi
 
-# Compile TrueCrypt from sources - icon and docs are contained within the
-# 'support files' archive. Note that we are still using TrueCrypt 7.0a.
-# Since sources for this version are no longer available from truecrypt.org,
-# we are hosting them on our own server, along with the signature from the
-# TrueCrypt Foundation so you can be sure these are the original sources.
-# TrueCrypt selbst kompilieren; Icons und Doku sind im Support-Files-Archiv
-# enthalten. Wir benutzen immer noch TrueCrypt 7.0a. Weil der Quell-
-# code für diese Version nicht mehr auf truecrypt.org verfügbar ist, bieten
-# wir ihn selbst zum Download an. Die Signatur stammt von der TrueCrypt-
-# Foundation, damit ist sichergestellt, dass dies die Original-Quellen sind.
-if [ $STEP -lt 8 ]; then
-CONCURRENCY_LEVEL=`grep -c 'model name' /proc/cpuinfo`
-let CONCURRENCY_LEVEL*=2
-test $NODOWNLOAD -ne 1 && wget -N http://cyberside.dontexist.org/truecrypt/TrueCrypt%207.0a%20Source.tar.gz
-test $NODOWNLOAD -ne 1 && wget -N http://cyberside.dontexist.org/truecrypt/TrueCrypt%207.0a%20Source.tar.gz.sig
-test $NOVERIFY -ne 1 && gpg --verify TrueCrypt\ 7.0a\ Source.tar.gz.sig TrueCrypt\ 7.0a\ Source.tar.gz
-tar --overwrite -xvzf TrueCrypt\ 7.0a\ Source.tar.gz
-sudo -H apt-get -y install libwxgtk2.8-dev libfuse-dev pkg-config nasm
-sudo -H mkdir -p /usr/local/include
-test $NODOWNLOAD -ne 1 && sudo -H wget -r -O /usr/local/include/pkcs11.h ftp://ftp.rsasecurity.com/pub/pkcs/pkcs-11/v2-20/pkcs11.h
-test $NODOWNLOAD -ne 1 && sudo -H wget -r -O /usr/local/include/pkcs11t.h ftp://ftp.rsasecurity.com/pub/pkcs/pkcs-11/v2-20/pkcs11t.h
-test $NODOWNLOAD -ne 1 && sudo -H wget -r -O /usr/local/include/pkcs11f.h ftp://ftp.rsasecurity.com/pub/pkcs/pkcs-11/v2-20/pkcs11f.h
-cd truecrypt-7.0a-source
-make clean
-PKCS11_INC=/usr/local/include make -j $CONCURRENCY_LEVEL
-sudo -H cp -f Main/truecrypt $CURDIR/edit/usr/local/bin/
-sudo -H chown root.root $CURDIR/edit/usr/local/bin/truecrypt
-STEP=8
-fi
-
 if [ $STEP -lt 9 ]; then
 export LC_ALL=C 
 
@@ -322,12 +293,18 @@ sudo -H rm $CURDIR/edit/tmp/*.deb
 STEP=9
 fi
 
-sudo -H cp -rf /usr/local/lib/python2.6/dist-packages/ $CURDIR/edit/usr/local/lib/python2.6/
-sudo -H cp -f /usr/local/bin/electrum $CURDIR/edit/usr/local/bin
-
 # Customizations to configuration data
 # Einstellungen anpassen
 if [ $STEP -lt 10 ]; then
+
+# Install Electrum bitcoin client
+sudo -H cp -rf /usr/local/lib/python2.6/dist-packages/ $CURDIR/edit/usr/local/lib/python2.6/
+sudo -H cp -f /usr/local/bin/electrum $CURDIR/edit/usr/local/bin
+
+# Install bitpit custom scripts
+sudo -H cp -f $CURDIR/scripts/*.sh $CURDIR/edit/usr/local/bin
+sudo -H chmod 755 $CURDIR/edit/usr/local/bin/*.sh
+
 # Reasonable settings for beagle
 # Sinnvolle Voreinstellungen für Beagle
 sudo -H cp -f $CURDIR/edit/tmp/Daemon.xml $CURDIR/edit/etc/beagle/config-files/Daemon.xml
@@ -423,10 +400,12 @@ xml:readwrite:/etc/gconf/gconf.xml.defaults \
 
 # Change wallpaper
 # Hintergrundbild ändern:
+# Copy bitpit bg image
+sudo -H cp -f $CURDIR/images/bitpit.png $CURDIR/edit/usr/local/share/backgrounds/bitpit-bg.png
 sudo -H chroot $CURDIR/edit gconftool-2 --direct --config-source \
 xml:readwrite:/etc/gconf/gconf.xml.defaults \
 --type string --set /desktop/gnome/background/picture_filename \
-"/usr/local/share/backgrounds/upr-bg.png"
+"/usr/local/share/backgrounds/bitpit-bg.png"
 
 # Set nautilus to list view
 # Nautilus auf Listenansicht umstellen:

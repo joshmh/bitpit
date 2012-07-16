@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f
 log_user 0
-set tmp scratch
+set tmp /tmp/scratch
 set vault $tmp/vault.dat
 set pass $env(GPG_PASS)
 
