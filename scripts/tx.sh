@@ -77,6 +77,8 @@ electrum -w $wallet mktx $btc_address $amount > $tx_file
 echo "Done."
 echo
 
+$scripts_dir/deseed-expect.sh
+rm $decrypted_seed
 
 echo "Your transaction is in the file tx.dat. Copy it to your online computer and run the command: "
 echo "electrum sendtx `cat tx.dat`"
@@ -84,5 +86,4 @@ echo
 echo "Alternatively, you can paste the contents of the file to a site such as bitsend.rowit.co.uk or brainwallet.org, and send it from there."
 echo
 
-rm $decrypted_seed
 rm -f $key1 $key2
