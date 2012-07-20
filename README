@@ -1,1 +1,55 @@
 An über-locked down live version of Ubuntu for Bitcoin cold storage and offline transactions.
+
+This is a mod of Ubuntu Privacy Remix aimed at secure offline Bitcoin transactions. It offers the following features:
+
+- Create a new encrypted offline Electrum wallet, with associated split keys, with one command.
+
+- The command takes care of deseeding the wallet, encrypting the seed file, and backing up the pass phrase into split keys.
+
+- Split keys are created with the ssss program. Once each key is copied to a separate usb drive, any two of the three drives will be sufficient to recover the pass phrase.
+
+- Decrypt seed file from either split keys or pass phrase, reseed wallet, and create offline transaction with one command.
+
+- All necessary software is already on the cd/usb image, there is no need to ever connect to the internet.
+
+The idea is to get a cheap netbook or old laptop, and boot with the cd or usb. All hard drives and internet access will be disabled at the [b]kernel[/b] level. A wallet is created on this computer, and the secured files are transferred to a usb drive. The offline wallet can now be monitored from Electrum, Blockchain.info and other clients. To transfer any amount of Bitcoins from the wallet, the deseeded, and updated wallet file is copied back to the offline computer via usb, and a transaction is created offline. The transaction is transferred back to the online computer, and broadcast via Electrum or an online service.
+
+I didn't develop anything groundbreaking here. The heavy lifting is done by GPG, ssss, Electrum, and the UPR distro. I believe this mod adds some value though, because it was previously difficult to get everything working on UPR, especially without internet access. This makes it a bit more accessible. That being said, development is at an early stage, and error messages in particular need a lot of love.
+
+-------------------------------------------------------------------------------------------
+
+Instructions:
+
+Boot
+----
+
+Boot computer with Bitpit CD or USB
+
+Create Wallet
+-------------
+
+Type the command: create-wallet.sh
+
+Backup Wallet
+-------------
+
+Copy the [b]vault[/b] directory to a usb drive. This can be backed up on the cloud.
+Copy each split key file in the split-keys directory to a separate usb drive. These are only needed if you forget your pass phrase.
+
+Create Transaction
+------------------
+
+Copy the vault directory back to the offline computer.
+You only need to copy the split keys back if you've forgotten your pass phrase.
+Run the command: tx.sh -- you'll be asked for the destination bitcoin address, the amount, and your pass phrase.
+Copy the resulting file, tx.dat, to your online computer, and send.
+
+-------------------------------------------------------------------------------------------
+
+Project code:
+
+https://github.com/joshmh/bitpit
+
+Download the iso image for burning on a CD or USB drive:
+
+https://www.dropbox.com/s/99utv37azpvjwfk/upr-10.04r2.iso
