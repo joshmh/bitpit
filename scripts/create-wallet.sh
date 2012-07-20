@@ -7,7 +7,9 @@ echo
 echo "*** bitpit 0.1 ***"
 echo
 echo "This program creates a new Electrum wallet and encrypts the seed with your pass phrase."
-echo "Additionally, the pass phrase is split into three files: key1.dat, key2.dat, and key2.dat."
+echo
+echo "Additionally, the pass phrase is split into three files: key1.dat, key2.dat, and key3.dat."
+echo
 echo "You should copy each of these files onto a different USB drive, and hide them in different locations."
 echo
 echo "If you ever forget your pass phrase, you will be able to reconstruct it with any two out of the three keys."
