@@ -35,7 +35,6 @@ $SCRIPTS_DIR/expect.sh
 
 echo
 echo "Creating split keys for seed..."
-$SCRIPTS_DIR/s-expect.sh
 sed -n -e 2p $TMP/splitted.dat > $SPLITS/key1.dat
 sed -n -e 3p $TMP/splitted.dat > $SPLITS/key2.dat
 sed -n -e 4p $TMP/splitted.dat > $SPLITS/key3.dat

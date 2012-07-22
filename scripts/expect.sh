@@ -1,10 +1,13 @@
 #!/usr/bin/expect -f
 log_user 0
+
+set timeout 120
 set tmp /tmp/scratch
 set vault $tmp/vault.dat
+set seed_path "$vault.seed"
 set pass $env(GPG_PASS)
 
-send "Creating Electrum wallet and seed...\r\n"
+send_user "Creating Electrum wallet and seed...\r\n"
 
 spawn electrum -w $vault create
 expect "Password"
@@ -25,6 +28,21 @@ spawn electrum -w $vault deseed
 expect "Are you sure"
 send "y\r"
 expect eof
+
+set seed_file [open $seed_path r]
+set seed_str [read $seed_file]
+
+send_user "Done.\r\n\r\n"
+send_user "Splitting seed...\r\n"
+
+spawn ssss-split -t 2 -n 3
+expect "Enter the secret"
+send "$seed_str\r\n"
+expect eof
+
+set file [open $tmp/splitted.dat w]
+puts $file $expect_out(buffer)
+close $file
 
 send_user "Done.\r\n"
 

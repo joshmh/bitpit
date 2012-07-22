@@ -33,14 +33,6 @@ if [ ! -f $wallet ]; then
 	exit
 fi
 
-if [ ! -f $encrypted_seed ]; then
-	echo "----------------------------------------------------------------"
-	echo
-	echo "$encrypted_seed encrypted seed file is missing. Please copy that file and try again."
-	echo
-	exit
-fi
-
 read -p "What bitcoin address would you like to send to? " btc_address
 read -p "How many bitcoins would you like to send? " amount
 
@@ -48,24 +40,32 @@ echo
 
 if [ -f $key1 -a -f $key2 ]; then
 	echo "Using split keys method."
-	pass=`$scripts_dir/combine-expect.sh`
-	export GPG_PASS=$pass
+	$scripts_dir/combine-expect.sh
 elif [ -f $key1 -o -f $key2 ]; then
 	echo "You need at least two key files, called key1.dat and key2.dat"
 	echo
 	exit
 else
+	if [ ! -f $encrypted_seed ]; then
+		echo "----------------------------------------------------------------"
+		echo
+		echo "$encrypted_seed encrypted seed file is missing. Please copy that file and try again."
+		echo
+		exit
+	fi
+
 	echo "Using pass phrase method."
 	read -s -p "Please enter your pass phrase: " pass
 	export GPG_PASS=$pass
-fi
 
-echo
-echo "Decrypting wallet..."
-$scripts_dir/gpg-expect.sh	
-export GPG_PASS=
-echo "Done."
-echo
+	echo
+	echo "Decrypting wallet..."
+	$scripts_dir/gpg-expect.sh	
+	export GPG_PASS=
+	echo "Done."
+	echo
+
+fi
 
 echo "Reseeding wallet..."
 electrum -w $wallet reseed > /dev/null
@@ -81,9 +81,10 @@ $scripts_dir/deseed-expect.sh
 rm $decrypted_seed
 
 echo "Your transaction is in the file tx.dat. Copy it to your online computer and run the command: "
-echo "electrum sendtx `cat tx.dat`"
+echo "electrum sendtx \`cat tx.dat\`"
 echo
 echo "Alternatively, you can paste the contents of the file to a site such as bitsend.rowit.co.uk or brainwallet.org, and send it from there."
 echo
 
+cat $tx_file
 rm -f $key1 $key2

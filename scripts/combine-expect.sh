@@ -2,6 +2,8 @@
 log_user 0
 
 set split_dir $env(HOME)/split-keys
+set seed_path $env(HOME)/vault/vault.dat.seed
+
 set key1 [read [open "$split_dir/key1.dat" r]]
 set key2 [read [open "$split_dir/key2.dat" r]]
 
@@ -13,4 +15,6 @@ send $key2
 expect "Resulting secret: "
 expect eof
 
-send_user $expect_out(buffer)
+set file [open $seed_path w]
+puts $file $expect_out(buffer)
+close $file
