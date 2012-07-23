@@ -2,6 +2,7 @@ TMP=/tmp/scratch
 OUT=$HOME/vault
 SPLITS=$HOME/split-keys
 SCRIPTS_DIR=/usr/local/bin
+#SCRIPTS_DIR=scripts
 
 echo
 echo "*** bitpit 0.1 ***"

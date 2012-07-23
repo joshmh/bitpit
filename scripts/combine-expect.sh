@@ -2,7 +2,7 @@
 log_user 0
 
 set split_dir $env(HOME)/split-keys
-set seed_path $env(HOME)/vault/vault.dat.seed
+set seed_path $env(HOME)/vault/vault.dat.seed.tmp
 
 set key1 [read [open "$split_dir/key1.dat" r]]
 set key2 [read [open "$split_dir/key2.dat" r]]

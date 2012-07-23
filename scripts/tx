@@ -1,6 +1,7 @@
 # Assume two keys (key1.dat, key2.dat), or ask for password
 
 scripts_dir=/usr/local/bin
+#scripts_dir=scripts
 
 keys_dir=$HOME/split-keys
 vault_dir=$HOME/vault
@@ -8,6 +9,7 @@ vault_dir=$HOME/vault
 key1=$keys_dir/key1.dat
 key2=$keys_dir/key2.dat
 encrypted_seed=$vault_dir/vault.dat.seed.asc
+tmp_seed=$vault_dir/vault.dat.seed.tmp
 decrypted_seed=$vault_dir/vault.dat.seed
 wallet=$vault_dir/vault.dat
 tx_file=$HOME/tx.dat
@@ -41,6 +43,8 @@ echo
 if [ -f $key1 -a -f $key2 ]; then
 	echo "Using split keys method."
 	$scripts_dir/combine-expect.sh
+	perl -pe 'chomp if eof' $tmp_seed | tr -d "\r" > $decrypted_seed
+	rm $tmp_seed
 elif [ -f $key1 -o -f $key2 ]; then
 	echo "You need at least two key files, called key1.dat and key2.dat"
 	echo
@@ -51,7 +55,6 @@ else
 		echo
 		echo "$encrypted_seed encrypted seed file is missing. Please copy that file and try again."
 		echo
-		exit
 	fi
 
 	echo "Using pass phrase method."

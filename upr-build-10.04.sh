@@ -302,8 +302,10 @@ sudo -H cp -rf /usr/local/lib/python2.6/dist-packages/ $CURDIR/edit/usr/local/li
 sudo -H cp -f /usr/local/bin/electrum $CURDIR/edit/usr/local/bin
 
 # Install bitpit custom scripts
-sudo -H cp -f $CURDIR/scripts/*.sh $CURDIR/edit/usr/local/bin
+sudo -H cp -f $CURDIR/scripts/* $CURDIR/edit/usr/local/bin
 sudo -H chmod 755 $CURDIR/edit/usr/local/bin/*.sh
+sudo -H chmod 755 $CURDIR/edit/usr/local/bin/cw
+sudo -H chmod 755 $CURDIR/edit/usr/local/bin/tx
 
 # Reasonable settings for beagle
 # Sinnvolle Voreinstellungen für Beagle
@@ -712,7 +714,7 @@ if [ $TAILS -eq 1 ]; then
 fi
 cd $CURDIR/extract-cd
 sudo -H mkisofs -r -V "UPR_10.04r2" -cache-inodes -J -l -b isolinux/isolinux.bin -c \
-isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../upr-10.04r2.iso .
+isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../bitpit-0.1.iso .
 
 if [ $TAILS -eq 1 ]; then
     sudo -H umount $CURDIR/extract-cd/live
@@ -730,7 +732,7 @@ if [ $STEP -lt 16 ]; then
     cd $CURDIR
     if [ $HYBRID -eq 1 ]; then
         if [ -x /usr/bin/isohybrid ]; then
-            sudo -H isohybrid --entry 4 --type 1c -v $CURDIR/upr-10.04r2.iso
+            sudo -H isohybrid --entry 4 --type 1c -v $CURDIR/bitpit.0.1.iso
         else
             echo "isohybrid not found, cannot make hybrid image!"
         fi
